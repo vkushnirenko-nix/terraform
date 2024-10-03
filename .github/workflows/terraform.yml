@@ -1,0 +1,33 @@
+name: Terraform Workflow
+
+on:
+  push:
+    branches:
+      - main  # Change to your branch
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest  # Use the latest Ubuntu runner
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Terraform
+      uses: hashicorp/setup-terraform@v1
+      with:
+        terraform_version: 1.8.5  # Specify the version of Terraform you want to use
+
+    - name: Initialize Terraform
+      run: terraform init
+
+    - name: Plan Terraform
+      run: terraform plan
+
+    - name: Apply Terraform
+      run: terraform apply -auto-approve
+      env:
+        # Set your environment variables for AWS or other providers here
+        TF_VAR_AWS_ACCESS_KEY_ID: ${{ secrets.ACCESS_KEY_ID }}
+        TF_VAR_AWS_SECRET_ACCESS_KEY: ${{ secrets.SECRET_ACCESS_KEY }}
+        TF_VAR_AWS_REGION: 'us-east-2'
