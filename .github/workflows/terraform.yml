@@ -16,7 +16,7 @@ jobs:
 
     strategy:
       matrix:
-        env: [00-bootstrap, 01-common, dev]
+        env: [00-bootstrap, 01-common, dev, stage]
 
     steps:
     - name: Checkout code
@@ -33,7 +33,9 @@ jobs:
 
     - name: Initialize Terraform
       working-directory: ${{ matrix.env }}
-      run: terraform init
+      run: |
+        aws s3 ls
+        terraform init
 
     - name: Plan Terraform
       working-directory: ${{ matrix.env }}
