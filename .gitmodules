@@ -1,0 +1,3 @@
+[submodule "sls-tf-modules"]
+	path = sls-tf-modules
+	url = git@github.com:vkushnirenko-nix/sls-tf-modules.git
