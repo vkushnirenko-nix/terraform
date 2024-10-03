@@ -13,7 +13,7 @@ env:
   TF_VAR_AWS_REGION: 'us-east-2'
 
 jobs:
-  terraform:
+  00-bootstrap:
     runs-on: ubuntu-latest
 
     steps:
@@ -30,27 +30,77 @@ jobs:
       with:
         terraform_version: 1.8.5
 
-    - name: Terraform apply 00-bootstrap
+    - name: apply 00-bootstrap
       working-directory: 00-bootstrap
       run: |
         aws s3 cp s3://sls-terraform-statefiles/00-bootstrap.tfstate .
         terraform init
         terraform plan
 
-    - name: Terraform apply 01-common
+  01-common:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        submodules: 'true'
+        python-version: 3.9
+    - name: Install AWS CLI
+      run: pip install awscli
+
+    - name: Set up Terraform
+      uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_version: 1.8.5
+
+    - name: apply 01-common
       working-directory: 01-common
       run: |
-        aws s3 cp s3://sls-terraform-statefiles/01-common.tfstate .
         terraform init
         terraform plan
 
-    - name: Initialize Terraform
+  dev:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        submodules: 'true'
+        python-version: 3.9
+    - name: Install AWS CLI
+      run: pip install awscli
+
+    - name: Set up Terraform
+      uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_version: 1.8.5
+
+    - name: apply dev
       working-directory: dev
       run: |
         terraform init
         terraform plan
 
-    - name: Plan Terraform
+  stage:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        submodules: 'true'
+        python-version: 3.9
+    - name: Install AWS CLI
+      run: pip install awscli
+
+    - name: Set up Terraform
+      uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_version: 1.8.5
+
+    - name: apply stage
       working-directory: stage
       run: |
         terraform init
