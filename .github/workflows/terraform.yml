@@ -18,12 +18,13 @@ jobs:
 
     strategy:
       matrix:
-        env: [00-bootstrap, 01-common, dev, stage]
+        env: [dev, stage]
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
       with:
+        submodules: 'true'
         python-version: 3.9
     - name: Install AWS CLI
       run: pip install awscli
@@ -33,10 +34,23 @@ jobs:
       with:
         terraform_version: 1.8.5
 
+    - name: Terraform apply 00-bootstrap
+      working-directory: 00-bootstrap
+      run: |
+        aws s3 cp s3://sls-terraform-statefiles/00-bootstrap.tfstate .
+        terraform init
+        terraform plan
+
+    - name: Terraform apply 01-common
+      working-directory: 01-common
+      run: |
+        aws s3 cp s3://sls-terraform-statefiles/01-common.tfstate .
+        terraform init
+        terraform plan
+
     - name: Initialize Terraform
       working-directory: ${{ matrix.env }}
       run: |
-        aws s3 ls
         terraform init
 
     - name: Plan Terraform
