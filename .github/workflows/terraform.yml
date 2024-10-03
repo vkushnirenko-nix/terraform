@@ -16,10 +16,6 @@ jobs:
   terraform:
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        env: [dev, stage]
-
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
@@ -49,13 +45,16 @@ jobs:
         terraform plan
 
     - name: Initialize Terraform
-      working-directory: ${{ matrix.env }}
+      working-directory: dev
       run: |
         terraform init
+        terraform plan
 
     - name: Plan Terraform
-      working-directory: ${{ matrix.env }}
-      run: terraform plan
+      working-directory: stage
+      run: |
+        terraform init
+        terraform plan
 
 #    - name: Apply Terraform
 #      run: terraform apply -auto-approve
