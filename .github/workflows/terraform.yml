@@ -13,7 +13,7 @@ env:
   TF_VAR_AWS_REGION: 'us-east-2'
 
 jobs:
-  00-bootstrap:
+  bootstrap:
     runs-on: ubuntu-latest
 
     steps:
@@ -37,7 +37,7 @@ jobs:
         terraform init
         terraform plan
 
-  01-common:
+  common:
     runs-on: ubuntu-latest
 
     steps:
